@@ -1,4 +1,7 @@
-import React, { useState } from 'react';
+import React, { useState } from "react";
+import TodoList from "./TodoList";
+import TodoArchive from "./TodoArchive";
+import TodoInput from "./TodoInput";
 
 function Todo() {
     const [tasks, setTasks] = useState([
@@ -8,6 +11,7 @@ function Todo() {
         { id: 4, text: "Understand component communications", completed: false }
     ]);
     const [newTaskText, setNewTaskText] = useState('');
+    const [archiveList, setArchiveList] = useState([]);
 
     const toggleTask = (id) => {
         const newTasks = tasks.map(task => {
@@ -17,10 +21,6 @@ function Todo() {
             return task;
         });
         setTasks(newTasks);
-    };
-
-    const handleNewTaskChange = (event) => {
-        setNewTaskText(event.target.value);
     };
 
     const addTask = () => {
@@ -36,36 +36,33 @@ function Todo() {
     };
 
     const removeTask = (id) => {
+        const archivedTask = tasks.find(task => task.id === id);
         const newTasks = tasks.filter(task => task.id !== id);
         setTasks(newTasks);
+        addToArchive(archivedTask);
+    }
+
+    function addToArchive(archivedTask) {
+        setArchiveList([...archiveList, archivedTask]);
     }
 
     return (
-        <div className="container mt-3">
-            <h2 className="mb-3">Todo List</h2>
-            <ul className="list-group mb-3">
-                {tasks.map(task => (
-                    <li key={task.id} className={`list-group-item d-flex justify-content-between align-items-center ${task.completed ? 'list-group-item-secondary' : ''}`}>
-                        <span style={{ textDecoration: task.completed ? 'line-through' : 'none' }}>
-                            {task.text}
-                        </span>
-                        <div className="button-group">
-                            <button className={`btn ${task.completed ? 'btn-success' : 'btn-outline-success'} mr-1`} onClick={() => toggleTask(task.id)}>
-                                {task.completed ? 'Undo' : 'Complete'}
-                            </button>
-                            <button className="btn btn-danger" onClick={() => removeTask(task.id)}>Delete</button>
-                        </div>
-                    </li>
-                ))}
-            </ul>
-            <div className="input-group mb-3">
-                <input type="text" className="form-control" placeholder="Add new task" value={newTaskText} onChange={handleNewTaskChange} />
-                <div className="input-group-append">
-                    <button className="btn btn-primary" onClick={addTask}>Add Task</button>
-                </div>
-            </div>
-        </div>
-    );
+        <>
+            <TodoInput
+                addTask={addTask}
+                newTaskText={newTaskText}
+                setNewTaskText={setNewTaskText}
+            />
+            <TodoList
+                tasks={tasks}
+                toggleTask={toggleTask}
+                removeTask={removeTask}
+            />
+            <TodoArchive
+                archiveList={archiveList}
+            />
+        </>
+    )
 }
 
 export default Todo;
