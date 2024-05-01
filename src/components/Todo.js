@@ -35,6 +35,11 @@ function Todo() {
         }
     };
 
+    const removeTask = (id) => {
+        const newTasks = tasks.filter(task => task.id !== id);
+        setTasks(newTasks);
+    }
+
     return (
         <div className="container mt-3">
             <h2 className="mb-3">Todo List</h2>
@@ -44,9 +49,12 @@ function Todo() {
                         <span style={{ textDecoration: task.completed ? 'line-through' : 'none' }}>
                             {task.text}
                         </span>
-                        <button className={`btn ${task.completed ? 'btn-success' : 'btn-outline-success'}`} onClick={() => toggleTask(task.id)}>
-                            {task.completed ? 'Undo' : 'Complete'}
-                        </button>
+                        <div className="button-group">
+                            <button className={`btn ${task.completed ? 'btn-success' : 'btn-outline-success'} mr-1`} onClick={() => toggleTask(task.id)}>
+                                {task.completed ? 'Undo' : 'Complete'}
+                            </button>
+                            <button className="btn btn-danger" onClick={() => removeTask(task.id)}>Delete</button>
+                        </div>
                     </li>
                 ))}
             </ul>
